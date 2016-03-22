@@ -17,7 +17,7 @@ The purpose of this project is to study and implement network anomaly detection 
 Currently, It's set up to work as a cron job to gather data for tests:
 
 ```
-*/5 * * * * ../../usr/bin/python /home/user/script_name.py time.md ID
+*/5 * * * * ../../usr/bin/python /home/user/client.py time.md ID
 */5 * * * * ../../usr/bin/python /home/user/updateTime.py
 ```
 
