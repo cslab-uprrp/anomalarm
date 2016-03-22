@@ -1,0 +1,6 @@
+credentials.py
+venv/
+*.pyc
+*.csv
+sftp-config.json
+.DS_Store
