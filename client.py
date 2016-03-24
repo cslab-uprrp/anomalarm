@@ -127,11 +127,48 @@ class NetworkAnomaly:
 
             smooth = aa.expoSmooth(data, 0.4)
             timedump = smooth['time']
+            print len(timedump)
 
             # To test the graph out.
             key = 'input octet'
             plotOriginalvsSmoothed(timedump, data, smooth, key)
             na.handleAnomalies(data, smooth, "DataRange")
+
+# This function handles the Flask application, and
+# gathers all of the data from the input.
+def handle(id, start, end):
+    global dq
+    global na
+    global aa
+    global c
+    # Create the MySQLdb object with the proper credentials to connect to
+    # the data base with all of the network flow data.
+    if 'port' in credentials.login:
+        db = MySQLdb.connect(user = credentials.login['user'], 
+        passwd = credentials.login['password'],
+        db = credentials.login['db'],
+        host = credentials.login['host'],
+        port = int(credentials.login['port']))
+    else:
+        db = MySQLdb.connect(user = credentials.login['user'], 
+            passwd = credentials.login['password'],
+            db = credentials.login['db'],
+            host = credentials.login['host'])
+    c = db.cursor()
+
+    # Create the DataQuery object to extract all of the data from the database,
+    # the NetworkAnomaly object to handle anomaly detection with the data,
+    # and the AnomalyAlgorithm object to handle any calculations and running
+    # the data through the different algorithms.
+    dq = DataQuery()
+    na = NetworkAnomaly()
+    aa = AnomalyAlgorithm()
+
+    start = time.mktime(datetime.datetime.strptime(start, "%d/%m/%Y").timetuple())
+    end = time.mktime(datetime.datetime.strptime(end, "%d/%m/%Y").timetuple())
+
+    na.anomaly(id, start, end)
+    db.close()
 
 
 if __name__ == "__main__":
@@ -140,10 +177,17 @@ if __name__ == "__main__":
     
     # Create the MySQLdb object with the proper credentials to connect to
     # the data base with all of the network flow data.
-    db = MySQLdb.connect(user = credentials.login['user'], 
-    	passwd = credentials.login['password'],
-    	db = credentials.login['db'],
-    	host = credentials.login['host'])
+    if 'port' in credentials.login:
+        db = MySQLdb.connect(user = credentials.login['user'], 
+        passwd = credentials.login['password'],
+        db = credentials.login['db'],
+        host = credentials.login['host'],
+        port = int(credentials.login['port']))
+    else:
+        db = MySQLdb.connect(user = credentials.login['user'], 
+        	passwd = credentials.login['password'],
+        	db = credentials.login['db'],
+        	host = credentials.login['host'])
     c = db.cursor()
 
     # Create the DataQuery object to extract all of the data from the database,

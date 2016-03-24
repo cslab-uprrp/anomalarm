@@ -1,5 +1,6 @@
 import sys
 import time
+import os
 
 def plotOriginalvsSmoothed(timearr, original, smoothed, key):
 	value = 300 * 24
@@ -11,7 +12,6 @@ def plotOriginalvsSmoothed(timearr, original, smoothed, key):
 	soriginal = "%s" % str(original[key][0])
 	ssmoothed = "%s" % str(smoothed[key][0])
 	for i in range(1,len(original[key])):
-
 		if(timearr[i] % value == 0):
 			stime += ", '%s'" % time.strftime("%a, %d %b %Y %I:%M:%S %p", time.localtime(timearr[i]))
 		else:
@@ -22,7 +22,7 @@ def plotOriginalvsSmoothed(timearr, original, smoothed, key):
 	stime += "],"
 	soriginal += "]"
 	ssmoothed += "]"
-	js = """var lineChartData1 = {
+	js = """var lineChartData = {
 		labels : ["""
 	js += stime
 	js += """
@@ -49,18 +49,19 @@ def plotOriginalvsSmoothed(timearr, original, smoothed, key):
 				pointHighlightStroke : "rgba(151,187,205,1)",
 				data : ["""
 	js += ssmoothed
+	print ssmoothed
 	js += """
 			}]}
 		window.onload = function(){
-				var ctx1 = document.getElementById("canvas1").getContext("2d");
-				window.myLine = new Chart(ctx1).Line(lineChartData1, {
+				var ctx1 = document.getElementById("canvas").getContext("2d");
+				window.myLine = new Chart(ctx1).Line(lineChartData, {
 						responsive: true
 				});
 		}
 	"""
 	script_dir = os.path.dirname(__file__)
-	rel_path = "public_html/graph.js"
+	rel_path = "static/graph.js"
 	abs_file_path = os.path.join(script_dir, rel_path)
-	text_file = open(abs_file_path, "w")
+	text_file = open(abs_file_path, "r+")
 	text_file.write(js)
 	text_file.close()
