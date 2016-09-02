@@ -1,6 +1,9 @@
 from math import sqrt 
 import random
-
+from sklearn.linear_model import LinearRegression
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 # This class implements all of the algorithms used
 # to detect network anomalies, including any methods
 # that may be necessary to calculate attributes.
@@ -120,3 +123,28 @@ class AnomalyAlgorithm:
             if testSet[-1] == predictions[x]:
                 correct += 1
         return (correct/float(len(testSet))) * 100.0
+
+    def lineRegression(self, data):
+        lm = LinearRegression()
+        X = []
+        dat = []
+        keys = ['input packet','output octet', 'output packet']
+        for i in range(len(data['input octet'])):
+            temp = []
+            for key in keys:
+                temp.append(data[key][i])
+            X.append(temp)
+        for i in range(len(data['input octet'])):
+            dat.append([data['input octet'][i]])
+        print "X check", X
+        lm.fit(X, data['input octet'])
+        Y = lm.predict(X)
+        plt.scatter(data['input octet'], lm.predict(X))
+        plt.xlabel("Actual Input Octet")
+        plt.ylabel("Predicted Input Octet?")
+        # M = lm.predict(dat)
+        print "El ultimo valor de X: ", X[-1]
+        print "El ultimo valor de X que el modelo predice: ", Y[-1]
+        print "Ultimo de input octet, por probar: ", data['input octet'][-1]
+        # print "El ultimo valor de INPUT OCTET que el modelo predice: ", M[-1]
+        plt.show()

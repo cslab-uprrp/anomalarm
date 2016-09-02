@@ -74,7 +74,7 @@
 			// Number - The number of steps in a hard coded scale
 			scaleSteps: 10,
 			// Number - The value jump in the hard coded scale
-			scaleStepWidth: 100000000,
+			scaleStepWidth: 40000000,
 			// Number - The scale starting value
 			scaleStartValue: null,
 

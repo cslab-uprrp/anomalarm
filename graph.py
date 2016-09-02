@@ -49,7 +49,6 @@ def plotOriginalvsSmoothed(timearr, original, smoothed, key):
 				pointHighlightStroke : "rgba(151,187,205,1)",
 				data : ["""
 	js += ssmoothed
-	print ssmoothed
 	js += """
 			}]}
 		window.onload = function(){
@@ -62,6 +61,6 @@ def plotOriginalvsSmoothed(timearr, original, smoothed, key):
 	script_dir = os.path.dirname(__file__)
 	rel_path = "static/graph.js"
 	abs_file_path = os.path.join(script_dir, rel_path)
-	text_file = open(abs_file_path, "r+")
+	text_file = open(abs_file_path, "w")
 	text_file.write(js)
 	text_file.close()

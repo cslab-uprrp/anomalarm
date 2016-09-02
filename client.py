@@ -127,12 +127,13 @@ class NetworkAnomaly:
 
             smooth = aa.expoSmooth(data, 0.4)
             timedump = smooth['time']
-            print len(timedump)
 
             # To test the graph out.
             key = 'input octet'
             plotOriginalvsSmoothed(timedump, data, smooth, key)
             na.handleAnomalies(data, smooth, "DataRange")
+
+            # aa.lineRegression(data)
 
 # This function handles the Flask application, and
 # gathers all of the data from the input.
@@ -223,8 +224,6 @@ if __name__ == "__main__":
                     start = f.readline()
                     start = start.replace('\n', '')
                     start = time.mktime(datetime.datetime.strptime(start, "%d/%m/%Y %H:%M:%S").timetuple())
-                    print start
-                    print type(start)
                     f.close()
             else:
                 start = time.mktime(datetime.datetime.strptime(start, "%d/%m/%Y").timetuple())
