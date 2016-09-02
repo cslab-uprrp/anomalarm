@@ -1,21 +1,58 @@
+#!/usr/bin/env python
 import MySQLdb
+import credentials
 
-ONE_DAY       = 86400        # Total number of seconds in a day.
-ONE_WEEK      = ONE_DAY * 7  # Total number of seconds in a week.
-FIVE_MINS_DAY = 288          # Total number of five minute intervals in a day.
-FIVE_MINS_WEEK = 2016        # Total number of five minute intervals in a week.
-FIVE_MINS_MONTH = 2016 * 4   # Total number of five minute intervals in a month.
+ONE_DAY         = 86400        # Total number of seconds in a day.
+ONE_WEEK        = ONE_DAY * 7  # Total number of seconds in a week.
+FIVE_MINS_DAY   = 288          # Total number of five minute intervals in a day.
+FIVE_MINS_WEEK  = 2016         # Total number of five minute intervals in a week.
+FIVE_MINS_MONTH = 2016 * 4     # Total number of five minute intervals in a month.
 
 """
-This class holds all of the queries to extract
-the network flow data from the database.
+This class creates and manages a connection to 
+the database, and holds all of the queries used 
+to extract the network flow data from the database.
 """
 class DataQuery(object):
-	def __init__(self, cursor):
+	def __init__(self):
+		self.connect()
+
+	def __del__(self):
+		self.close()
+
+	def connect(self):
 		"""
-		Set the database cursor.
+		Create the MySQLdb object with the proper credentials to connect to
+		the database with all of the network flow data.
 		"""
-		self.cursor = cursor
+		try:
+			if 'port' in credentials.login:
+				self.db = MySQLdb.connect(user = credentials.login['user'], 
+				passwd = credentials.login['password'],
+				db = credentials.login['db'],
+				host = credentials.login['host'],
+				port = int(credentials.login['port']))
+			else:
+				self.db = MySQLdb.connect(user = credentials.login['user'], 
+					passwd = credentials.login['password'],
+					db = credentials.login['db'],
+					host = credentials.login['host'])
+			self.cursor = self.db.cursor()
+		except Exception as e:
+			raise e
+
+	def close(self):
+		"""
+		Closes the database connection.
+		"""
+		try:
+			if self.db:
+				self.db.close()
+				print "Safely closed database connection."
+			else:
+				print "No database connection to close..."
+		except Exception as e:
+			raise e
 
 	def GetDataRange(self, id, start, finish):
 		"""
